@@ -2,6 +2,7 @@ import unittest
 from main import timeCalculator
 from main import getPos
 from building import Building
+from main import insert_call
 # from building import Building
 
 
@@ -24,7 +25,14 @@ class mainTest(unittest.TestCase):
         print(getPos(lst, 0, 50))
         self.assertTrue(-2 == getPos(lst, 0, 35)[0])
 
+    def test_insert(self):
 
+        initial = []
+        insert_call(initial, 0, 0, -1, 1)
+        insert_call(initial, 0, 0, -1, 3)
+        insert_call(initial, 0, -1, -2, 19)
+        insert_call(initial, 0, 0, 1, 30)
+        print(initial)
 
 
 

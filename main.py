@@ -4,11 +4,8 @@ import math
 
 
 def main():
-
     callsfile = "venv/Calls_a.csv"
     df = pd.read_csv(callsfile, header=None)
-
-    print(building.Elevators[0]["_speed"])
 
     # for i in range(df.shape[0]):
     #     df[5][i] = 1
@@ -80,12 +77,12 @@ def getPos(stops, elev, time):
     # 2)is there someone on the elevator
     isOnElev = False
     if len(stops[index][3]) == 0 and travelersCounter < 0:
-        isOnElev = true
+        isOnElev = True
 
     if isWaiting or isOnElev:
         departingTime = stops[index][2]
     else:
-        departingTime = minBordingTime
+        departingTime = minBoardingTime
 
     t = time - departingTime - (elevator["_closeTime"] + elevator["_startTime"])
 
@@ -99,18 +96,17 @@ def getPos(stops, elev, time):
 # while taking into account the boarding time
 
 def insert_call(stops: [[[]]], elev, src, dest, time):
-    elevator = Building.Elevators[elev]
+    building = Building("f.json")
+    elevator = building.Elevators[elev]
     floor_time = elevator["_closeTime"] + elevator["_openTime"] + elevator["_startTime"] + elevator["_stopTime"]
     speed = elevator["_speed"]
     if len(stops) == 0:
-        stops[0][0] = src
-        stops[0][1] = 1
+
         if src != 0:  # the first src is already 0
-            stops[0][2] = abs(src) / speed + floor_time
-        stops[0][3].append(time)
-        stops[1][0] = dest
-        stops[1][1] = -1
-        stops[1][2] = abs(dest - stops) / speed + floor_time + stops[0][2]
+            stops.append([src, 1, time + abs(src) / speed + floor_time, [time]])
+        else:
+            stops.append([src, 1, time, [time]])
+        stops.append([dest, -1, abs(dest - src) / speed + floor_time + stops[0][2], []])
 
     else:
         index = len(stops) - 1
@@ -119,7 +115,7 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
         destTime = 0
         destIndex = 0
         minBoardingTime = time
-        for i in range(len(stops) - 1, 0):
+        for i in range(len(stops) - 1, -1, -1):
             # if len(stops[i][3]) > 0:
             #    minBoardingTime = min([min(stops[i][3]), minBoardingTime])
             if stops[i][2] < time:
@@ -127,19 +123,22 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
                 break
 
         for i in range(index, len(stops)):
-            pos = getpos(elev, time)  # check order
+            pos = getPos(stops, elev, time)  # check order
+            # call added to the end of the list
             if i == len(stops) - 1:
                 if src == stops[i]:
                     srcIndex = i
                     stops[i][1] += 1
                     stops[i][3].append(time)
+                    break
                 else:
                     srcIndex = i + 1
-                    srcTime = abs(stops[i][0] - src) / speed + floor_time
+                    srcTime = abs(stops[i][0] - src) / speed + floor_time + max(stops[i][2], time)
                     stops.append([src, 1, srcTime, [time]])
-
+                    break
+            # special test for the first interval
             if i == index and (pos[0] <= src <= stops[i + 1][0] or pos[0] >= src >= stops[i + 1][0]):
-                if src == pos[0] and pos[0] == stops[i][0]:
+                if src == pos[0] and pos[0] == stops[i][0] and pos[1] == 0:
                     srcIndex = i
                     stops[i][1] += 1
                     stops[i][3].append(time)
@@ -149,8 +148,12 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
                     stops[i + 1][3].append(time)
                 else:
                     srcIndex = i + 1
-                    srcTime = pos[1] + abs(pos[0] - src) / speed + elevator["_openTime"] + elevator["_stopTime"]
+                    # warning: adding time might be an overfitting
+                    srcTime = max(stops[i][2], time) + pos[1] + abs(pos[0] - src) / speed + elevator["_openTime"] + elevator["_stopTime"]
                     stops.insert(srcIndex, [src, 1, srcTime, [time]])
+                    # adding delay caused from the new stop
+                    for p in range(srcIndex + 1, len(stops)):
+                        stops[p][2] += floor_time
                 break
 
             if stops[i][0] <= src <= stops[i + 1][0] or stops[i][0] >= src >= stops[i + 1][0]:
@@ -164,14 +167,18 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
                     stops[i + 1][3].append(time)
                 else:
                     srcIndex = i + 1
-                    srcTime = abs(stops[i][0] - src) / speed + floor_time
+                    srcTime = abs(stops[i][0] - src) / speed + floor_time + max(stops[i][2], time)
                     stops.insert(srcIndex, [src, 1, srcTime, [time]])
+                    # adding delay caused from the new stop
+                    for p in range(srcIndex + 1, len(stops)):
+                        stops[p][2] += floor_time
                 break
 
         for i in range(srcIndex, len(stops)):
             if i == len(stops) - 1:
-                destTime = abs(stops[i][0] - dest) / speed + floor_time
+                destTime = abs(stops[i][0] - dest) / speed + floor_time + stops[i][2]
                 stops.append([dest, -1, destTime, []])
+                break
 
             if stops[i][0] <= dest <= stops[i + 1][0] or stops[i][0] >= dest >= stops[i + 1][0]:
                 if dest == stops[i][0]:
@@ -179,6 +186,9 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
                 elif dest == stops[i + 1][0]:
                     stops[i + 1][1] -= 1
                 else:
-                    destTime = abs(stops[i][0] - dest) / speed + floor_time
+                    destTime = abs(stops[i][0] - dest) / speed + floor_time + stops[i][2]
                     stops.insert(i + 1, [dest, -1, destTime, []])
+                    # adding delay caused from the new stop
+                    for p in range(i + 2, len(stops)):
+                        stops[p][2] += floor_time
                 break
