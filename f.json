@@ -4,7 +4,7 @@
   "_elevators": [
     {
       "_id": 0,
-      "_speed": 0.5,
+      "_speed": 1,
       "_minFloor": -2,
       "_maxFloor": 10,
       "_closeTime": 2.0,
