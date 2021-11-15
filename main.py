@@ -13,24 +13,24 @@ calls = []
 # outfile =  input("insert a output file path")
 
 # this function receive a up to 5 calls and assign them to the elevators
-def allocate(callsList, callSize):
+def allocate(callsList, indices:[[]]):
     global calls
     copys = []
     elevatorNum = len(building.Elevators)
     minWaitingTime = 10000000000
     minSetup = []
-    for i in range(pow(elevatorNum, len(callsList))):
-        lst = decToBaseX(i, elevatorNum, callSize)
+
+    for i in indices:
         copys = copy.deepcopy(calls)
         row = 0
-        for j in lst:
+        for j in i:
             insert_call(copys[j], j, callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]))
             row += 1
         time = 0
         for j in range(elevatorNum):
             time += timeCalculator(copys[j], j)
         if time < minWaitingTime:
-            minSetup = lst
+            minSetup = i
             minWaitingTime = time
     row=0
     for m in minSetup:
@@ -227,6 +227,10 @@ def main(argv):
 
     callSize = 1
     counter = 0
+    indices = []
+    for i in range(pow(len(building.Elevators), callSize)):
+        indices.append(decToBaseX(i, len(building.Elevators), callSize))
+
     temp = []
     for c in rows:
         temp.append(c)
@@ -234,19 +238,19 @@ def main(argv):
             if counter == 99:
                 print("h")
 
-            assignments = allocate(temp, callSize)
+            assignments = allocate(temp, indices)
             for a in assignments:
                 df[5][counter] = a
                 counter += 1
             temp = []
 
     if len(temp) > 0:
-        assignments = allocate(temp, callSize)
+        assignments = allocate(temp, indices)
         for a in assignments:
             df[5][counter] = a
             counter += 1
 
-    print(df)
+    print(calls[0])
     df.to_csv(output, index=None, header=False)
 
 
