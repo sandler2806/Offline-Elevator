@@ -1,4 +1,5 @@
 import copy
+import json
 import sys
 
 import pandas as pd
@@ -13,7 +14,7 @@ calls = []
 # outfile =  input("insert a output file path")
 
 # this function receive a up to 5 calls and assign them to the elevators
-def allocate(callsList, indices:[[]]):
+def allocate(callsList, indices:[[]], json_calls):
     global calls
     copys = []
     elevatorNum = len(building.Elevators)
@@ -21,7 +22,7 @@ def allocate(callsList, indices:[[]]):
     minSetup = []
 
     for i in indices:
-        copys = copy.deepcopy(calls)
+        copys = json.loads(json_calls)
         row = 0
         for j in i:
             insert_call(copys[j], j, callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]))
@@ -230,7 +231,6 @@ def main(argv):
     indices = []
     for i in range(pow(len(building.Elevators), callSize)):
         indices.append(decToBaseX(i, len(building.Elevators), callSize))
-
     temp = []
     for c in rows:
         temp.append(c)
@@ -238,14 +238,14 @@ def main(argv):
             if counter == 99:
                 print("h")
 
-            assignments = allocate(temp, indices)
+            assignments = allocate(temp, indices, json.dumps(calls))
             for a in assignments:
                 df[5][counter] = a
                 counter += 1
             temp = []
 
     if len(temp) > 0:
-        assignments = allocate(temp, indices)
+        assignments = allocate(temp, indices,  json.dumps(calls))
         for a in assignments:
             df[5][counter] = a
             counter += 1
