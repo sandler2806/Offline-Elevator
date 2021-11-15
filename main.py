@@ -225,7 +225,7 @@ def main(argv):
     df = pd.read_csv(callsfile, header=None)
     rows = [r[1] for r in df.iterrows()]
 
-    callSize = 2
+    callSize = 1
     counter = 0
     temp = []
     for c in rows:
