@@ -1,8 +1,6 @@
 import unittest
-from main import timeCalculator
-from main import getPos
-from building import Building
-from main import insert_call
+
+from main import *
 # from building import Building
 
 
@@ -32,8 +30,11 @@ class mainTest(unittest.TestCase):
         insert_call(initial, 0, 0, -1, 3)
         insert_call(initial, 0, -1, -2, 19)
         insert_call(initial, 0, 0, 1, 30)
+        insert_call(initial, 0, 2, 1, 70)
         print(initial)
 
+    def test_baseX(self):
+        print(decToBaseX(0, 4, 5))
 
 
 

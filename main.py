@@ -1,28 +1,41 @@
+import copy
+import sys
+
 import pandas as pd
 from building import Building
 import math
 
 
-def main():
-    callsfile = "venv/Calls_a.csv"
-    df = pd.read_csv(callsfile, header=None)
-
-    # for i in range(df.shape[0]):
-    #     df[5][i] = 1
-    # calls = [r for r in df.iterrows()]
-    # print(df)
-    # df.to_csv('new.csv',index =None, header=False)
-
-
-if __name__ == '__main__':
-    main()
+building = []
+calls = []
 
 
 # outfile =  input("insert a output file path")
 
 # this function receive a up to 5 calls and assign them to the elevators
-def allocate(call):
-    pass
+def allocate(callsList, callSize):
+    global calls
+    copys = []
+    elevatorNum = len(building.Elevators)
+    minWaitingTime = 10000000000
+    minSetup = []
+    for i in range(pow(elevatorNum, len(callsList))):
+        lst = decToBaseX(i, elevatorNum, callSize)
+        copys = copy.deepcopy(calls)
+        row = 0
+        for j in lst:
+            insert_call(copys[j], j, callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]))
+            row += 1
+        time = 0
+        for j in range(elevatorNum):
+            time += timeCalculator(copys[j], j)
+        if time < minWaitingTime:
+            minSetup = lst
+            minWaitingTime = time
+
+    calls = copys
+
+    return minSetup
 
 
 # this function gets an elevator,src and dest of a new call, and return
@@ -33,8 +46,6 @@ def allocate(call):
 # this function get elevator and it's stops and calculate the time
 # it take to complete them
 def timeCalculator(stops: [[]], elev):
-    bfile = "f.json"
-    building = Building(bfile)
     stops.insert(0, [0, 0, 0, []])
     time = 0  # total waiting time of all the users
     onBoard = 0  # number of people(calls) on board
@@ -53,8 +64,6 @@ def timeCalculator(stops: [[]], elev):
 
 
 def getPos(stops, elev, time):
-    bfile = "f.json"
-    building = Building(bfile)
     time = math.ceil(time)
 
     index = 0
@@ -96,7 +105,6 @@ def getPos(stops, elev, time):
 # while taking into account the boarding time
 
 def insert_call(stops: [[[]]], elev, src, dest, time):
-    building = Building("f.json")
     elevator = building.Elevators[elev]
     floor_time = elevator["_closeTime"] + elevator["_openTime"] + elevator["_startTime"] + elevator["_stopTime"]
     speed = elevator["_speed"]
@@ -106,7 +114,7 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
             stops.append([src, 1, time + abs(src) / speed + floor_time, [time]])
         else:
             stops.append([src, 1, time, [time]])
-        stops.append([dest, -1, abs(dest - src) / speed + floor_time + stops[0][2], []])
+        stops.append([dest, -1, math.ceil(abs(dest - src) / speed + floor_time + stops[0][2]), []])
 
     else:
         index = len(stops) - 1
@@ -133,7 +141,7 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
                     break
                 else:
                     srcIndex = i + 1
-                    srcTime = abs(stops[i][0] - src) / speed + floor_time + max(stops[i][2], time)
+                    srcTime = math.ceil(abs(stops[i][0] - src) / speed + floor_time + max(stops[i][2], time))
                     stops.append([src, 1, srcTime, [time]])
                     break
             # special test for the first interval
@@ -149,7 +157,8 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
                 else:
                     srcIndex = i + 1
                     # warning: adding time might be an overfitting
-                    srcTime = max(stops[i][2], time) + pos[1] + abs(pos[0] - src) / speed + elevator["_openTime"] + elevator["_stopTime"]
+                    srcTime = math.ceil(max(stops[i][2], time) + pos[1] + abs(pos[0] - src) / speed + elevator["_openTime"] + \
+                              elevator["_stopTime"])
                     stops.insert(srcIndex, [src, 1, srcTime, [time]])
                     # adding delay caused from the new stop
                     for p in range(srcIndex + 1, len(stops)):
@@ -167,7 +176,7 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
                     stops[i + 1][3].append(time)
                 else:
                     srcIndex = i + 1
-                    srcTime = abs(stops[i][0] - src) / speed + floor_time + max(stops[i][2], time)
+                    srcTime = math.ceil(abs(stops[i][0] - src) / speed + floor_time + max(stops[i][2], time))
                     stops.insert(srcIndex, [src, 1, srcTime, [time]])
                     # adding delay caused from the new stop
                     for p in range(srcIndex + 1, len(stops)):
@@ -176,7 +185,7 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
 
         for i in range(srcIndex, len(stops)):
             if i == len(stops) - 1:
-                destTime = abs(stops[i][0] - dest) / speed + floor_time + stops[i][2]
+                destTime = math.ceil(abs(stops[i][0] - dest) / speed + floor_time + stops[i][2])
                 stops.append([dest, -1, destTime, []])
                 break
 
@@ -186,9 +195,55 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
                 elif dest == stops[i + 1][0]:
                     stops[i + 1][1] -= 1
                 else:
-                    destTime = abs(stops[i][0] - dest) / speed + floor_time + stops[i][2]
+                    destTime = math.ceil(abs(stops[i][0] - dest) / speed + floor_time + stops[i][2])
                     stops.insert(i + 1, [dest, -1, destTime, []])
                     # adding delay caused from the new stop
                     for p in range(i + 2, len(stops)):
                         stops[p][2] += floor_time
                 break
+
+
+def decToBaseX(call_num, base, callSize):
+    reminder = []
+    for i in range(callSize):
+        reminder.insert(0, call_num % base)
+        call_num = math.floor(call_num / base)
+
+    return reminder
+
+
+def main(argv):
+    global building
+    global calls
+    building = Building(argv[0])
+    calls = [[] for q in range(len(building.Elevators))]
+    callsfile = argv[1]
+    output = argv[2]
+
+    df = pd.read_csv(callsfile, header=None)
+    rows = [r[1] for r in df.iterrows()]
+
+    callSize = 5
+    counter = 0
+    temp = []
+    for c in rows:
+        temp.append(c)
+        if len(temp) == callSize:
+            assignments = allocate(temp, callSize)
+            for a in assignments:
+                df[5][counter] = a
+                counter += 1
+            temp = []
+
+    if len(temp) > 0:
+        assignments = allocate(temp, callSize)
+        for a in assignments:
+            df[5][counter] = a
+            counter += 1
+
+    print(df)
+    df.to_csv(output, index=None, header=False)
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
