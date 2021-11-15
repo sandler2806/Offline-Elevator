@@ -32,8 +32,11 @@ def allocate(callsList, callSize):
         if time < minWaitingTime:
             minSetup = lst
             minWaitingTime = time
+    row=0
+    for m in minSetup:
+        insert_call(calls[m],m , callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]))
+        row += 1
 
-    calls = copys
 
     return minSetup
 
@@ -46,7 +49,6 @@ def allocate(callsList, callSize):
 # this function get elevator and it's stops and calculate the time
 # it take to complete them
 def timeCalculator(stops: [[]], elev):
-    stops.insert(0, [0, 0, 0, []])
     time = 0  # total waiting time of all the users
     onBoard = 0  # number of people(calls) on board
     elevator = building.Elevators[elev]
@@ -108,13 +110,13 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
     elevator = building.Elevators[elev]
     floor_time = elevator["_closeTime"] + elevator["_openTime"] + elevator["_startTime"] + elevator["_stopTime"]
     speed = elevator["_speed"]
-    if len(stops) == 0:
+    if len(stops) == 1:
 
         if src != 0:  # the first src is already 0
             stops.append([src, 1, time + abs(src) / speed + floor_time, [time]])
         else:
             stops.append([src, 1, time, [time]])
-        stops.append([dest, -1, math.ceil(abs(dest - src) / speed + floor_time + stops[0][2]), []])
+        stops.append([dest, -1, math.ceil(abs(dest - src) / speed + floor_time + stops[1][2]), []])
 
     else:
         index = len(stops) - 1
@@ -216,19 +218,22 @@ def main(argv):
     global building
     global calls
     building = Building(argv[0])
-    calls = [[] for q in range(len(building.Elevators))]
+    calls = [[[0, 0, 0, []]] for q in range(len(building.Elevators))]
     callsfile = argv[1]
     output = argv[2]
 
     df = pd.read_csv(callsfile, header=None)
     rows = [r[1] for r in df.iterrows()]
 
-    callSize = 5
+    callSize = 1
     counter = 0
     temp = []
     for c in rows:
         temp.append(c)
         if len(temp) == callSize:
+            if counter == 99:
+                print("h")
+
             assignments = allocate(temp, callSize)
             for a in assignments:
                 df[5][counter] = a
