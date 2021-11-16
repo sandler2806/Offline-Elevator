@@ -5,6 +5,7 @@ import pandas as pd
 from building import Building
 import math
 
+# efdfg
 
 building = []
 calls = []
@@ -13,30 +14,35 @@ calls = []
 # outfile =  input("insert a output file path")
 
 # this function receive a up to 5 calls and assign them to the elevators
-def allocate(callsList, callSize):
+def allocate(callsList, indices: [[]]):
     global calls
-    copys = []
+    # initial_copys = copy.deepcopy(calls)
+    # for i in range(0,len(initial_copys)):
+
     elevatorNum = len(building.Elevators)
+    copys = [[]] * elevatorNum
     minWaitingTime = 10000000000
     minSetup = []
-    for i in range(pow(elevatorNum, len(callsList))):
-        lst = decToBaseX(i, elevatorNum, callSize)
-        copys = copy.deepcopy(calls)
+    for i in indices:
+        for j in set(i):
+            copys[j] = calls[j]
         row = 0
-        for j in lst:
+        for j in i:
             insert_call(copys[j], j, callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]))
             row += 1
         time = 0
         for j in range(elevatorNum):
-            time += timeCalculator(copys[j], j)
+            if j in i:
+                time += timeCalculator(copys[j], j)
+            else:
+                time += timeCalculator(calls[j], j)
         if time < minWaitingTime:
-            minSetup = lst
+            minSetup = i
             minWaitingTime = time
-    row=0
+    row = 0
     for m in minSetup:
-        insert_call(calls[m],m , callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]))
+        insert_call(calls[m], m, callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]))
         row += 1
-
 
     return minSetup
 
@@ -52,7 +58,11 @@ def timeCalculator(stops: [[]], elev):
     time = 0  # total waiting time of all the users
     onBoard = 0  # number of people(calls) on board
     elevator = building.Elevators[elev]
-
+    # index = len(stops) - 1
+    # for i in range(len(stops) - 1, -1, -1):
+    #     if stops[i][2] < time_check:
+    #         index = i
+    #         break
     for i in range(1, len(stops)):
         # add the traveling time times the travelers onboard
         time += onBoard * (stops[i][2] - stops[i - 1][2])
@@ -159,8 +169,9 @@ def insert_call(stops: [[[]]], elev, src, dest, time):
                 else:
                     srcIndex = i + 1
                     # warning: adding time might be an overfitting
-                    srcTime = math.ceil(max(stops[i][2], time) + pos[1] + abs(pos[0] - src) / speed + elevator["_openTime"] + \
-                              elevator["_stopTime"])
+                    srcTime = math.ceil(
+                        max(stops[i][2], time) + pos[1] + abs(pos[0] - src) / speed + elevator["_openTime"] + \
+                        elevator["_stopTime"])
                     stops.insert(srcIndex, [src, 1, srcTime, [time]])
                     # adding delay caused from the new stop
                     for p in range(srcIndex + 1, len(stops)):
@@ -225,16 +236,19 @@ def main(argv):
     df = pd.read_csv(callsfile, header=None)
     rows = [r[1] for r in df.iterrows()]
 
-    callSize = 2
+    callSize = 1
     counter = 0
     temp = []
+    indices = []
+    for i in range(pow(len(building.Elevators), callSize)):
+        indices.append(decToBaseX(i, len(building.Elevators), callSize))
     for c in rows:
         temp.append(c)
         if len(temp) == callSize:
             if counter == 99:
                 print("h")
 
-            assignments = allocate(temp, callSize)
+            assignments = allocate(temp, indices)
             for a in assignments:
                 df[5][counter] = a
                 counter += 1
