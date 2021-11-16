@@ -5,6 +5,7 @@ from main import *
 
 
 class mainTest(unittest.TestCase):
+
     b1 = Building("f.json")
 
     def test_something(self):
@@ -35,6 +36,9 @@ class mainTest(unittest.TestCase):
 
     def test_baseX(self):
         print(decToBaseX(0, 4, 5))
+
+
+
 
 
 
