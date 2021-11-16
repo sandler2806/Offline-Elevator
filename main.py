@@ -1,6 +1,7 @@
-import copy
 import json
 import sys
+from time import time
+import cProfile
 
 import pandas as pd
 from building import Building
@@ -67,6 +68,7 @@ def timeCalculator(stops: [[]], elev):
 
 
 def getPos(stops, elev, time):
+
     time = math.ceil(time)
 
     index = 0
@@ -216,6 +218,8 @@ def decToBaseX(call_num, base, callSize):
 
 
 def main(argv):
+
+    start = time()
     global building
     global calls
     building = Building(argv[0])
@@ -250,8 +254,9 @@ def main(argv):
             df[5][counter] = a
             counter += 1
 
-    print(calls[0])
     df.to_csv(output, index=None, header=False)
+    end = time()
+    print(f'It took {end - start} seconds!')
 
 
 if __name__ == '__main__':
