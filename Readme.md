@@ -29,6 +29,7 @@ the algorithm will allocare an elevator for the call based on sevral parameters 
 we take advantage of the fact that we can "see in to the future" to check if picking certain elevator will affect badly on our average waiting time. the algorithm con comfortably calculate the best chioce while looking 3-4 calls ahead on heavy cases and more on small cases.
 <hr>
 ### UML Diagram
+
 ![UML](https://user-images.githubusercontent.com/74304423/142268875-f4ae05f6-f5fe-46d5-bdc0-8f462576023f.png)
 
 
