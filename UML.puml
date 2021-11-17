@@ -1,0 +1,36 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Main{
+    -build:Building
+
+
+}
+class Simulator_tools{
+    +allocate()
+    +timeCalculator()
+    +baseX()
+    +insertCall()
+    +getPos()
+}
+
+class GraphicSimulator{
+
+    -b1: Building
+
+    +drawBuilding()
+    +createElevator()
+    +goTo()
+    +drawFloors()
+
+}
+class Building
+
+Main --> Simulator_tools
+Main -- GraphicSimulator
+Building <-- Main
+
+
+
+
+@enduml
