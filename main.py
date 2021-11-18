@@ -42,6 +42,7 @@ def main(argv):
             counter += 1
 
     df.to_csv(output, index=None, header=False)
+    return calls
 
 
 if __name__ == '__main__':
