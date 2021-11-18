@@ -38,11 +38,15 @@ using these tools will help us make the right allocations.
 ### How to run the project
 
 To run the project we have to insert two diffrent command in the terminal
-1) producing the allocations file, for that we have to pass the main module 3 fils, Building File(json) , Calls File(csv), and another csv to for the output
+1)to produce the allocations file,  we have to pass the main module 3 files, Building File(json) , Calls File(csv), and another csv to for the output
 <br> example:
 ![image](https://user-images.githubusercontent.com/74304423/142471616-03345339-855e-4560-94b3-67a8f7ae0a46.png)
 
-3)
+2) now we run the checker and supply it with id's, the chosen building and allocations file from before and output log file
+<br>
+examle:  ![image](https://user-images.githubusercontent.com/74304423/142473119-6afb4fbf-df8b-48e6-bd85-af392fde9625.png)
+
+
 ### UML Diagram
 
 ![UML](https://user-images.githubusercontent.com/74304423/142268875-f4ae05f6-f5fe-46d5-bdc0-8f462576023f.png)
