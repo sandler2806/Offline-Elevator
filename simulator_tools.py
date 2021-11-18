@@ -6,8 +6,9 @@ building = Building("")
 calls = []
 
 
-# this function receive a up to 5 calls and assign them to the elevators
 def allocate(callsList, indices: [[]], json_calls, current_building, calls):
+    """this function receive a number of calls and assign them to the best elevators"""
+
     global building
     building = current_building
     copys = [0] * 10
@@ -23,7 +24,7 @@ def allocate(callsList, indices: [[]], json_calls, current_building, calls):
         row = 0
         for j in i:
             if len(callsList) > row:
-                insert_call(copys[j], j, callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]),building)
+                insert_call(copys[j], j, callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]), building)
             row += 1
         time = 0
         for j in range(elevatorNum):
@@ -37,19 +38,14 @@ def allocate(callsList, indices: [[]], json_calls, current_building, calls):
     row = 0
     for m in minSetup:
         if len(callsList) > row:
-            insert_call(calls[m], m, callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]),building)
+            insert_call(calls[m], m, callsList[row][2], callsList[row][3], math.ceil(callsList[row][1]), building)
         row += 1
     return calls, minSetup
 
 
-# this function gets an elevator,src and dest of a new call, and return
-# the delayed caused by assigning this elevator for the new call
-# def delayCalculator(calls,elev, src, dest):
-#     pass
-
-# this function get elevator and it's stops and calculate the time
-# it take to complete them
 def timeCalculator(stops: [[]], elev):
+    """this function get elevator and it's stops and calculate the time it take to complete them"""
+
     total_time = 0  # total waiting time of all the users
     onBoard = 0  # number of people(calls) on board
 
@@ -65,9 +61,10 @@ def timeCalculator(stops: [[]], elev):
     return total_time
 
 
-def getPos(stops, elev, current_time,building):
-    current_time = math.ceil(current_time)
+def getPos(stops, elev, current_time, building):
+    """this function get elevator and it's stops and calculate the location of the elevator at a given time"""
 
+    current_time = math.ceil(current_time)
     index = 0
     minBoardingTime = 10000000000
     travelersCounter = 0
@@ -102,10 +99,10 @@ def getPos(stops, elev, current_time,building):
     return [min(stops[index][0] + t * speed, stops[index + 1][0]), 0]
 
 
-# this function insert a call to the stop list of given elevator by Boaz logic
-# while taking into account the boarding time
+def insert_call(stops: [[[]]], elev, src, dest, time, building):
+    """this function insert a call to the stop list of given elevator by Boaz logic
+     while taking into account the boarding time"""
 
-def insert_call(stops: [[[]]], elev, src, dest, time,building):
     elevator = building.Elevators[elev]
     floor_time = elevator["_closeTime"] + elevator["_openTime"] + elevator["_startTime"] + elevator["_stopTime"]
     speed = elevator["_speed"]
@@ -127,7 +124,7 @@ def insert_call(stops: [[[]]], elev, src, dest, time,building):
                 break
 
         for i in range(index, len(stops)):
-            pos = getPos(stops, elev, time,building)
+            pos = getPos(stops, elev, time, building)
             # call added to the end of the list
             if i == len(stops) - 1:
                 if src == stops[i]:
@@ -232,6 +229,9 @@ def insert_call(stops: [[[]]], elev, src, dest, time,building):
 
 
 def decToBaseX(call_num, base, callSize):
+    """this function get a number, base and number of calls and return the number according the new base
+    and fill the rest of the calls with zeros"""
+
     reminder = []
     for i in range(callSize):
         reminder.insert(0, call_num % base)
