@@ -6,12 +6,12 @@ from main import *
 class mainTest(unittest.TestCase):
 
     def test_allocate(self):
-        b1 = Building("f.json")
-        calls= [[[0, 0, 0, []]] for q in range(len(b1.Elevators))]
-        callsList=[['Elevator call', 15.74901825, 0, -6, 0, -1]]
+        b1 = Building("b0.json")
+        calls = [[[0, 0, 0, []]] for q in range(len(b1.Elevators))]
+        callsList = [['Elevator call', 15.74901825, 0, -6, 0, -1]]
         callsList1 = [['Elevator call', 24.346, 12, 80, 0, -1]]
         callsList2 = [['Elevator call', 53.1423, -3, 42, 0, -1]]
-        json_List=['[[0, 0, 0, []]]', '[[0, 0, 0, []]]']
+        json_List = ['[[0, 0, 0, []]]', '[[0, 0, 0, []]]']
         c, ans = allocate(callsList, [[0], [1]], json_List, b1, calls)
         self.assertTrue([0] == ans)
         c, ans1 = allocate(callsList, [[1], [1]], json_List, b1, calls)
@@ -34,7 +34,7 @@ class mainTest(unittest.TestCase):
         self.assertTrue(39 == timeCalculator(lst4, 0))
 
     def test_getPos(self):
-        b1 = Building("f.json")
+        b1 = Building("b0.json")
 
         lst = [[0, 0, 0], [0, 1, 1, [1]], [0, 1, 11, [3]], [-1, -1, 22, [19]], [-2, -1, 33, []], [0, 1, 45, [30]],
                [1, -1, 56, []]]
@@ -48,14 +48,21 @@ class mainTest(unittest.TestCase):
         self.assertTrue(0 == getPos(lst4, 0, 205, b1)[0])
 
     def test_insert(self):
-        b1 = Building("f.json")
+        b1 = Building("b0.json")
 
         initial = [[0, 0, 0]]
         insert_call(initial, 0, 0, -1, 1, b1)
+        self.assertTrue(initial == [[0, 0, 0], [0, 1, 1, [1]], [-1, -1, 12, []]])
         insert_call(initial, 0, 0, -1, 3, b1)
+        self.assertTrue(initial == [[0, 0, 0], [0, 1, 1, [1]], [0, 1, 11, [3]], [-1, -2, 22, []]])
         insert_call(initial, 0, -1, -2, 19, b1)
+        self.assertTrue(initial == [[0, 0, 0], [0, 1, 1, [1]], [0, 1, 11, [3]], [-1, -1, 22, [19]], [-2, -1, 33, []]])
         insert_call(initial, 0, 0, 1, 30, b1)
+        self.assertTrue(initial == [[0, 0, 0], [0, 1, 1, [1]], [0, 1, 11, [3]], [-1, -1, 22, [19]], [-2, -1, 33, []],
+                                    [0, 1, 45, [30]], [1, -1, 56, []]])
         insert_call(initial, 0, 2, 1, 70, b1)
+        self.assertTrue(initial == [[0, 0, 0], [0, 1, 1, [1]], [0, 1, 11, [3]], [-1, -1, 22, [19]], [-2, -1, 33, []],
+                                    [0, 1, 45, [30]], [1, -1, 56, []], [2, 1, 81, [70]], [1, -1, 92, []]])
 
     def test_baseX(self):
         self.assertTrue(decToBaseX(0, 4, 5) == [0, 0, 0, 0, 0])
@@ -64,5 +71,5 @@ class mainTest(unittest.TestCase):
         self.assertTrue(decToBaseX(30, 4, 5) == [0, 0, 1, 3, 2])
 
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     unittest.main()

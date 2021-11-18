@@ -24,13 +24,36 @@ the algorithm will allocare an elevator for the call based on sevral parameters 
 - the time it take to the elevator to complete the call (based on it's current unfinished missions)
 - the delay cuased to other users of the elevator from handling the call
 - how will it affect the next calls - win the war not the fight
-- 
 
-we take advantage of the fact that we can "see in to the future" to check if picking certain elevator will affect badly on our average waiting time. the algorithm con comfortably calculate the best chioce while looking 3-4 calls ahead on heavy cases and more on small cases.
+we take advantage of the fact that we can "see in to the future" to check if picking certain elevator will affect badly on our average waiting time. the algorithm can comfortably calculate the best chioce while looking 3-4 calls ahead on heavy cases and more on small cases.
+
+
+#### Simulator
+we need a set of functions that will help us to simulate the elevators system at any given moment.for that, we built a whole class (simulatorTools)
+that help us to know where are the elevators in given time, when will an elevator finish it's current mission list and more...
+using these tools will help us make the right allocations.
+
 <hr>
+
+### How to run the project
+
+To run the project we have to insert two diffrent command in the terminal
+1)to produce the allocations file,  we have to pass the main module 3 files, Building File(json) , Calls File(csv), and another csv to for the output
+<br> example:
+![image](https://user-images.githubusercontent.com/74304423/142471616-03345339-855e-4560-94b3-67a8f7ae0a46.png)
+
+2) now we run the checker and supply it with id's, the chosen building and allocations file from before and output log file
+<br> examle: 
+![image](https://user-images.githubusercontent.com/74304423/142473273-b6c2b310-6f0a-436d-940a-23438206fab6.png)
+
+
 
 ### UML Diagram
 
 ![UML](https://user-images.githubusercontent.com/74304423/142268875-f4ae05f6-f5fe-46d5-bdc0-8f462576023f.png)
+
+
+### Results for the elementary cases
+
 
 
