@@ -4,7 +4,7 @@
 
 ### The Problem
 
-after constructing a live version of this algorithm, which assign call to elevator in real time. we are tasked with writing an **Offline algorithm**, which receive a data base containing all the calls that occurred in some time period and assign all of them to one of the elevators in the building. 
+after constructing a live version of this algorithm, which assign call to elevator in real time. we are tasked with writing an **Offline algorithm**, which receive a data base containing all the calls that occured in some time period and assign all of them to one of the elevators in the building. 
 ### literature review:
 
 
@@ -18,19 +18,36 @@ our algorithm is influenced from it's online version, with some unique features 
 it is important to note that the actuall commanding of the elevator is not defined by our code. the commanding logic is quite simple, the elevator will keep moving in the same direction as long as it has active calls in that direction.
 
 #### algorithms principles:
-the algorithm is designed to allocate calls in a way that will leave us with a low average waiting time
+the algorithm is desigend to allocate calls in a way that will leave us with a low average waiting time
 
-the algorithm will allocate an elevator for the call based on several parameters :
+the algorithm will allocare an elevator for the call based on sevral parameters :
 - the time it take to the elevator to complete the call (based on it's current unfinished missions)
-- the delay caused to other users of the elevator from handling the call
+- the delay cuased to other users of the elevator from handling the call
 - how will it affect the next calls - win the war not the fight
-- 
 
-we take advantage of the fact that we can "see in to the future" to check if picking certain elevator will affect badly on our average waiting time. the algorithm con comfortably calculate the best choice while looking 3-4 calls ahead on heavy cases and more on small cases.
+we take advantage of the fact that we can "see in to the future" to check if picking certain elevator will affect badly on our average waiting time. the algorithm can comfortably calculate the best chioce while looking 3-4 calls ahead on heavy cases and more on small cases.
+
+
+#### Simulator
+we need a set of functions that will help us to simulate the elevators system at any given moment.for that, we built a whole class (simulatorTools)
+that help us to know where are the elevators in given time, when will an elevator finish it's current mission list and more...
+using these tools will help us make the right allocations.
+
 <hr>
 
+### How to run the project
+
+To run the project we have to insert two diffrent command in the terminal
+1) producing the allocations file, for that we have to pass the main module 3 fils, Building File(json) , Calls File(csv), and another csv to for the output
+![image](https://user-images.githubusercontent.com/74304423/142471616-03345339-855e-4560-94b3-67a8f7ae0a46.png)
+
+3)
 ### UML Diagram
 
 ![UML](https://user-images.githubusercontent.com/74304423/142268875-f4ae05f6-f5fe-46d5-bdc0-8f462576023f.png)
+
+
+### Results for the elementary cases
+
 
 
