@@ -30,19 +30,18 @@ def draw():
     # wn.delay(int(100))
     wn.setup(0.5, 0.98, 0, 0)
     # turtle.setworldcoordinates(0,0,500,500)
-    wn.addshape("el2.gif")
+    wn.addshape("pics\el2.gif")
     wn.screensize(elevNum * 150, floorsNum * FLOOR_H * 2.2)
     global WIN_H, WIN_W
     WIN_W = wn.window_width()
     WIN_H = wn.window_height()
-
 
     # draw building and floors
     build = drawBuilding(floorsNum + 1, elevNum)
 
     turtle.tracer(False)
     for i in range(floorsNum + 1):
-        drawx(FLOOR_H * i -WIN_H / 2 + 40, i + b1.minFloor, elevNum)
+        drawx(FLOOR_H * i - WIN_H / 2 + 40, i + b1.minFloor, elevNum)
         turtle.update()
 
     turtle.tracer(True)
@@ -69,8 +68,8 @@ def drawBuilding(floors, elevators):
     elevators = FLOOR_W * elevators
     t = turtle.Turtle()
     t.penup()
-    t.sety(-WIN_H/2 + 40)
-    t.setx(-WIN_W/2 + 40)
+    t.sety(-WIN_H / 2 + 40)
+    t.setx(-WIN_W / 2 + 40)
     t.pendown()
     t.hideturtle()
     t.speed(0)
@@ -99,15 +98,14 @@ def create_Elev(elev_num, val):
     t.penup()
     t.setx(val)
 
-    t.sety(-WIN_H / 2 + 10 + (abs(MIN_FLOOR)+1) * FLOOR_H)
-    t.shape("el2.gif")
+    t.sety(-WIN_H / 2 + 10 + (abs(MIN_FLOOR) + 1) * FLOOR_H)
+    t.shape("pics\el2.gif")
     t.pendown()
 
     return t
 
 
 def drawx(val, i, elevNum):
-
     trtl = turtle.Turtle()
     trtl.penup()
     trtl.sety(val)
@@ -118,12 +116,13 @@ def drawx(val, i, elevNum):
     trtl.forward(elevNum * FLOOR_W)
     trtl.write(f'{i}')
 
-def goto(turt,elev_num, floors: []):
+
+def goto(turt, elev_num, floors: []):
     for f in floors:
         if floors[0][1] == floors[0][0]:
             floors.remove(1)
         turt.penup()
-        origin = -WIN_H / 2 + 10 + (abs(MIN_FLOOR)+1) * FLOOR_H
+        origin = -WIN_H / 2 + 10 + (abs(MIN_FLOOR) + 1) * FLOOR_H
         turt.sety(origin + FLOOR_H * f[0])
         turt.pendown()
         time.sleep(3 + elev_num * 0.5)
