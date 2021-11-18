@@ -43,8 +43,9 @@ To run the project we have to insert two diffrent command in the terminal
 ![image](https://user-images.githubusercontent.com/74304423/142471616-03345339-855e-4560-94b3-67a8f7ae0a46.png)
 
 2) now we run the checker and supply it with id's, the chosen building and allocations file from before and output log file
-<br>
-examle:  ![image](https://user-images.githubusercontent.com/74304423/142473119-6afb4fbf-df8b-48e6-bd85-af392fde9625.png)
+<br> examle: 
+![image](https://user-images.githubusercontent.com/74304423/142473273-b6c2b310-6f0a-436d-940a-23438206fab6.png)
+
 
 
 ### UML Diagram
