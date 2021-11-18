@@ -19,7 +19,7 @@ def draw():
     b1 = Building(building)
     global MIN_FLOOR
     MIN_FLOOR = b1.minFloor
-    call_file = "Ex1_Calls/Calls_b.csv"
+    call_file = "Ex1_Calls/Calls_d.csv"
     calls = main([building, call_file, "new.csv"])
     calls = [c[1:] for c in calls]
 
