@@ -27,8 +27,6 @@ def main(argv):
                 json_list.append(json.dumps(calls[j]))
 
             calls, assignments = allocate(callsList, indices, json_list, building, calls)
-            l = []
-            l = list(callsList[0])
             for a in assignments:
                 df[5][counter] = a
                 counter += 1
