@@ -39,6 +39,7 @@ using these tools will help us make the right allocations.
 
 To run the project we have to insert two diffrent command in the terminal
 1) producing the allocations file, for that we have to pass the main module 3 fils, Building File(json) , Calls File(csv), and another csv to for the output
+<br> example:
 ![image](https://user-images.githubusercontent.com/74304423/142471616-03345339-855e-4560-94b3-67a8f7ae0a46.png)
 
 3)
