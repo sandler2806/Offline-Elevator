@@ -71,6 +71,7 @@ def getPos(stops, elev, current_time, building):
     travelersCounter = 0
     elevator = building.Elevators[elev]
     speed = elevator["_speed"]
+    # we check the last floor before the current time that the elevator stops in the list
     for i in range(len(stops) - 1, -1, -1):
         if len(stops[i][3]) > 0:
             minBoardingTime = min([min(stops[i][3]), minBoardingTime])
@@ -176,6 +177,7 @@ def insert_call(stops: [[[]]], elev, src, dest, time, building):
                     for p in range(srcIndex + 1, len(stops)):
                         stops[p][2] += math.ceil(floor_time)
                 break
+            # check if the elevator switch her direction and the call fitting
             if i > index and stops[i - 1][0] < stops[i][0] > stops[i + 1][0] and stops[i][0] < src:
                 srcIndex = i + 1
                 srcTime = math.ceil(abs(stops[i][0] - src) / speed + floor_time + max(stops[i][2], time))

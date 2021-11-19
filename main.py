@@ -43,6 +43,7 @@ def main(argv):
             counter += 1
 
     df.to_csv(output, index=None, header=False)
+    # return calls for the graphic simulator
     return calls
 
 
