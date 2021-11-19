@@ -52,6 +52,7 @@ the average waiting time will be shown in the terminal right after running the c
 ![image](https://user-images.githubusercontent.com/74304423/142474384-e591b7a2-9bf7-4490-a304-8320488cb43e.png)
 
 <hr>
+
 ### UML Diagram
 
 ![UML](https://user-images.githubusercontent.com/74304423/142268875-f4ae05f6-f5fe-46d5-bdc0-8f462576023f.png)
@@ -63,12 +64,22 @@ Our best results for the elementary cases
 ![resulat table](https://github.com/noamv2/offlineElevator/blob/main/pics/result%20table.jfif)
 
 
+
 ### Graphic simulator
 
 using the simulatorTools class and the turtle library we created a simple GUI simulator of the algorithm.
 aside from having a visualization, the simulator helped us with finding errors in our logic, as it is much easier to spot them
 when you see the elevators moving rather than looking at a boring log file.
+
 #### implementing
-the animation was created by using the "turtle" library. each elevator
-#### runing the simulator
-to run the simulator you have to run 
+the animation was created by using the "turtle" library and multithreading. each elevator has its own thread that execute the missions based
+on the elevator queue and calculated time. 
+
+#### footage
+
+![WhatsApp Image 2021-11-19 at 11 44 10](https://user-images.githubusercontent.com/74304423/142602881-fec16953-6dc2-4a62-82f3-7aab1a0717ec.jpeg)
+
+
+
+Youtube video: https://youtu.be/Cckj_T99fxU
+
