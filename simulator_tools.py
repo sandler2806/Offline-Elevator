@@ -16,6 +16,7 @@ def allocate(callsList, indices: [[]], json_calls, current_building, calls):
     minWaitingTime = 10000000000
     minSetup = []
     waitingTimes = []
+    # saving the current waiting time
     for j in range(elevatorNum):
         waitingTimes.append(timeCalculator(calls[j], j))
     for i in indices:
