@@ -15,7 +15,7 @@ def main(argv):
 
     df = pd.read_csv(callsfile, header=None)
     rows = [r[1] for r in df.iterrows()]
-    # calls allocate for number "X" of calls to find the best elevators given those calls
+    # passing a list of calls we want to assign with elevator, the number of calls may vary
     for i in range(pow(len(building.Elevators), callSize)):
         indices.append(decToBaseX(i, len(building.Elevators), callSize))
     callsList = []
@@ -26,21 +26,12 @@ def main(argv):
             json_list = []
             for j in range(len(calls)):
                 json_list.append(json.dumps(calls[j]))
-            # assign in the data frame the best elevator
+            # write the allocations into the dataframe
             calls, assignments = allocate(callsList, indices, json_list, building, calls)
             for a in assignments:
                 df[5][counter] = a
                 counter += 1
             callsList = []
-    # calls allocate for the rest of the calls(number of calls % X)
-    json_list = []
-    for j in range(len(calls)):
-        json_list.append(json.dumps(calls[j]))
-    if len(callsList) > 0:
-        calls, assignments = allocate(callsList, indices, json_list, building, calls)
-        for a in assignments:
-            df[5][counter] = a
-            counter += 1
 
     df.to_csv(output, index=None, header=False)
     # return calls for the graphic simulator
