@@ -11,6 +11,7 @@ def allocate(callsList, indices: [[]], json_calls, current_building, calls):
 
     global building
     building = current_building
+    # creating new list to save copies of the calls list
     copys = [0] * 10
     elevatorNum = len(building.Elevators)
     minWaitingTime = 10000000000
@@ -21,6 +22,7 @@ def allocate(callsList, indices: [[]], json_calls, current_building, calls):
         waitingTimes.append(timeCalculator(calls[j], j))
     for i in indices:
         for j in set(i):
+            # load the calls list of some elevator so we can alter it
             copys[j] = json.loads(json_calls[j])
         row = 0
         for j in i:
@@ -33,6 +35,7 @@ def allocate(callsList, indices: [[]], json_calls, current_building, calls):
                 time += timeCalculator(copys[j], j)
             else:
                 time += waitingTimes[j]
+        # keep the detail of the optimum elevators setup that handle the calls in the best times
         if time < minWaitingTime:
             minSetup = i
             minWaitingTime = time
@@ -71,7 +74,7 @@ def getPos(stops, elev, current_time, building):
     travelersCounter = 0
     elevator = building.Elevators[elev]
     speed = elevator["_speed"]
-    # we check the last floor before the current time that the elevator stops in the list
+    # we traverse up the calls list and keep track of the number of users in the elevator
     for i in range(len(stops) - 1, -1, -1):
         if len(stops[i][3]) > 0:
             minBoardingTime = min([min(stops[i][3]), minBoardingTime])
@@ -88,11 +91,13 @@ def getPos(stops, elev, current_time, building):
     if len(stops[index][3]) == 0 and travelersCounter < 0:
         isOnElev = True
 
+    # the departing time is calculated differently
     if isWaiting or isOnElev:
         departingTime = stops[index][2]
     else:
         departingTime = minBoardingTime
 
+    # t check in how many seconds the elevator will start it's movement
     t = current_time - departingTime - (elevator["_closeTime"] + elevator["_startTime"])
 
     if t <= 0:
@@ -124,7 +129,7 @@ def insert_call(stops: [[[]]], elev, src, dest, time, building):
             if stops[i][2] < time:
                 index = i
                 break
-
+        # we check the intervals to see if we can fit the src floor in between
         for i in range(index, len(stops)):
             pos = getPos(stops, elev, time, building)
             # call added to the end of the list
@@ -159,7 +164,7 @@ def insert_call(stops: [[[]]], elev, src, dest, time, building):
                     for p in range(srcIndex + 1, len(stops)):
                         stops[p][2] += math.ceil(floor_time)
                 break
-
+            #all the other intervals
             if stops[i][0] <= src <= stops[i + 1][0] or stops[i][0] >= src >= stops[i + 1][0]:
                 if src == stops[i][0]:
                     srcIndex = i
@@ -177,7 +182,8 @@ def insert_call(stops: [[[]]], elev, src, dest, time, building):
                     for p in range(srcIndex + 1, len(stops)):
                         stops[p][2] += math.ceil(floor_time)
                 break
-            # check if the elevator switch her direction and the call fitting
+            # here we handle the cases where the elevator finish going in this direction but we can still
+            # add the source floor before switching sides
             if i > index and stops[i - 1][0] < stops[i][0] > stops[i + 1][0] and stops[i][0] < src:
                 srcIndex = i + 1
                 srcTime = math.ceil(abs(stops[i][0] - src) / speed + floor_time + max(stops[i][2], time))
@@ -195,13 +201,14 @@ def insert_call(stops: [[[]]], elev, src, dest, time, building):
                 for p in range(srcIndex + 1, len(stops)):
                     stops[p][2] += math.ceil(floor_time)
                 break
-
+        # inserting the destination floor
         for i in range(srcIndex, len(stops)):
+            # in case that the source floor was added last
             if i == len(stops) - 1:
                 destTime = math.ceil(abs(stops[i][0] - dest) / speed + floor_time + stops[i][2])
                 stops.append([dest, -1, destTime, []])
                 break
-
+            # checking the possibility of adding the destination between the current floors interval
             if stops[i][0] <= dest <= stops[i + 1][0] or stops[i][0] >= dest >= stops[i + 1][0]:
                 if dest == stops[i][0]:
                     stops[i][1] -= 1
@@ -214,6 +221,8 @@ def insert_call(stops: [[[]]], elev, src, dest, time, building):
                     for p in range(i + 2, len(stops)):
                         stops[p][2] += math.ceil(floor_time)
                 break
+                # here we handle the cases where the elevator finish going in this direction but we can still
+                # add the destination floor before switching sides
             if stops[i - 1][0] < stops[i][0] > stops[i + 1][0] and stops[i][0] < dest:
                 destTime = math.ceil(abs(stops[i][0] - dest) / speed + floor_time + stops[i][2])
                 stops.insert(i + 1, [dest, -1, destTime, []])
